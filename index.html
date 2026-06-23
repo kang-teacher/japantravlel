@@ -382,9 +382,12 @@ footer a{color:var(--sakura);text-decoration:none}
       <div class="sg">
         <div class="sg-title">🤖 Claude AI 설정</div>
         <div class="sg-sub">Anthropic API 키를 입력하면 AI 채팅 기능이 활성화됩니다.</div>
+        <div id="auto-key-notice" style="display:none;padding:8px 12px;background:#e8f5e9;border-radius:8px;font-size:13px;color:#2e7d32">
+          ✅ GitHub Secrets에서 API 키가 자동으로 주입되었습니다. 아래 필드는 비워도 됩니다.
+        </div>
         <div class="ff">
-          <label class="fl" for="i-key">API 키</label>
-          <input class="fi" id="i-key" type="password" placeholder="sk-ant-api...">
+          <label class="fl" for="i-key">API 키 (직접 입력 — 선택)</label>
+          <input class="fi" id="i-key" type="password" placeholder="sk-ant-api... (GitHub Secrets로 자동 설정 시 불필요)">
           <span class="fn">⚠️ API 키는 브라우저 로컬스토리지에만 저장됩니다.</span>
         </div>
         <div class="ff">
@@ -430,6 +433,10 @@ footer a{color:var(--sakura);text-decoration:none}
 
 <script>
 'use strict';
+
+// GitHub Actions가 배포 시 이 값을 실제 Secret으로 치환합니다
+const BAKED_KEY = '__CLAUDE_API_KEY__';
+const AUTO_KEY = BAKED_KEY !== '__CLAUDE_API_KEY__' ? BAKED_KEY : '';
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const DESTS = [
@@ -770,7 +777,7 @@ async function sendMsg() {
   const msg = inp.value.trim();
   if (!msg) return;
 
-  const key = S.cfg.claudeKey;
+  const key = S.cfg.claudeKey || AUTO_KEY;
   if (!key) { toast('Claude API 키를 설정에서 입력해주세요','err'); openCfg(); return; }
 
   inp.value='';
@@ -845,6 +852,7 @@ function rmTyping(id) { document.getElementById(id)?.remove(); }
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
 function openCfg() {
   const c=S.cfg;
+  document.getElementById('auto-key-notice').style.display = AUTO_KEY ? '' : 'none';
   document.getElementById('i-key').value=c.claudeKey||'';
   document.getElementById('i-proxy').value=c.proxyUrl||'';
   document.getElementById('fb-key').value=c.firebase?.apiKey||'';
@@ -897,7 +905,7 @@ document.querySelectorAll('.fc').forEach(el=>{
 // ── INIT ──────────────────────────────────────────────────────────────────────
 initFB();
 render();
-if (S.cfg.claudeKey) setStat('c','on','연결됨');
+if (S.cfg.claudeKey || AUTO_KEY) setStat('c','on', AUTO_KEY && !S.cfg.claudeKey ? '자동 연결됨' : '연결됨');
 </script>
 </body>
 </html>
