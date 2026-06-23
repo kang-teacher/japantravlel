@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: barrier-free-japan-travel
+    env: static
+    buildCommand: bash build.sh
+    staticPublishPath: .
