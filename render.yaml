@@ -2,5 +2,5 @@ services:
   - type: web
     name: barrier-free-japan-travel
     env: static
-    buildCommand: bash build.sh
+    buildCommand: python3 -c "import os; c=open('index.html',encoding='utf-8').read(); open('index.html','w',encoding='utf-8').write(c.replace('__CLAUDE_API_KEY__', os.environ.get('CLAUDE_API_KEY','')))"
     staticPublishPath: .
