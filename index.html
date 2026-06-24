@@ -300,7 +300,47 @@
   footer { background: var(--navy); color: rgba(255,255,255,0.6); text-align: center; padding: 2rem; font-size: 0.82rem; }
   footer strong { color: white; }
 
+  /* ── 나만의 여행 계획 ── */
+  .plan-section {
+    background: var(--white); border-radius: 20px; border: 1px solid var(--border);
+    padding: 2rem; margin-bottom: 2rem;
+  }
+  .plan-section h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
+  .plan-section > p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .plan-form { display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; margin-bottom: 1.5rem; }
+  .plan-select, .plan-input {
+    height: 46px; padding: 0 14px; border: 1.5px solid var(--border);
+    border-radius: 12px; font-size: 14px; font-family: inherit; outline: none;
+    background: var(--cream); transition: border-color 0.2s;
+  }
+  .plan-select:focus, .plan-input:focus { border-color: var(--navy-mid); }
+  .btn-plan-add {
+    height: 46px; background: var(--navy); color: white; border: none;
+    border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+    padding: 0 18px; font-family: inherit; white-space: nowrap;
+  }
+  .btn-plan-add:hover { background: var(--navy-mid); }
+  .plan-list { display: flex; flex-direction: column; gap: 10px; }
+  .plan-item {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 14px 16px; background: var(--cream);
+    border: 1px solid var(--border); border-radius: 14px;
+  }
+  .plan-item-left { flex: 1; }
+  .plan-city { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .plan-memo { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; word-break: break-all; }
+  .plan-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+  .btn-plan-del {
+    background: none; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 6px 12px; font-size: 0.8rem; color: var(--text-muted);
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  }
+  .btn-plan-del:hover { border-color: #ef5350; color: #ef5350; }
+  .plan-empty { text-align: center; padding: 28px; color: var(--text-muted); font-size: 0.9rem; }
+
   @media (max-width: 640px) {
+    .plan-form { grid-template-columns: 1fr; }
+  }
     .hero { padding: 60px 1.25rem 80px; }
     .hero-floats { display: none; }
     .yolo-inner { grid-template-columns: 1fr; }
@@ -371,6 +411,35 @@
 <!-- ── MAIN ── -->
 <main class="main">
 
+  <!-- 여행지 카드 -->
+  <div class="section-header">
+    <h2 id="section-title">🗾 모든 추천 여행지</h2>
+    <p id="section-desc">장애 유형과 특성에 맞게 검증된 일본 여행지입니다</p>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+
+  <!-- 나만의 여행 계획 -->
+  <section class="plan-section" id="my-plan">
+    <h3>📋 나만의 여행 계획</h3>
+    <p>여행지를 선택하고 메모를 남겨 나만의 여행 계획을 저장하세요</p>
+    <div class="plan-form">
+      <select class="plan-select" id="planDestSelect">
+        <option value="">-- 여행지 선택 --</option>
+        <option value="도쿄">🗼 도쿄</option>
+        <option value="교토">⛩️ 교토</option>
+        <option value="오사카">🏯 오사카</option>
+        <option value="요코하마">⚓ 요코하마</option>
+        <option value="삿포로">❄️ 삿포로</option>
+        <option value="후쿠오카">🍜 후쿠오카</option>
+      </select>
+      <input class="plan-input" id="planMemoInput" type="text" placeholder="메모 (예: 3박 4일, 휠체어 대여 필요)" />
+      <button class="btn-plan-add" id="planAddBtn">저장</button>
+    </div>
+    <div class="plan-list" id="planList">
+      <div class="plan-empty">로그인 후 여행 계획을 저장할 수 있습니다.</div>
+    </div>
+  </section>
+
   <!-- 수화 인식 -->
   <section class="yolo-section" id="sign-lang">
     <h3>🤟 수화 실시간 인식</h3>
@@ -433,12 +502,6 @@
     <div class="ai-result ai-loading" id="aiResult">장애 유형을 선택하고 AI 추천을 받아보세요.</div>
   </section>
 
-  <!-- 여행지 카드 -->
-  <div class="section-header">
-    <h2 id="section-title">🗾 모든 추천 여행지</h2>
-    <p id="section-desc">장애 유형과 특성에 맞게 검증된 일본 여행지입니다</p>
-  </div>
-  <div class="cards-grid" id="cards-grid"></div>
 
 </main>
 
@@ -829,10 +892,13 @@ renderCards(DESTINATIONS);
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { getDatabase, ref, push, set, remove, onValue, off }
+    from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBAoxaZR7nj8NAFsM1WgFL0ZEF8PAdl8Dc",
     authDomain: "travel-3971e.firebaseapp.com",
+    databaseURL: "https://travel-3971e-default-rtdb.firebaseio.com",
     projectId: "travel-3971e",
     storageBucket: "travel-3971e.firebasestorage.app",
     messagingSenderId: "80463163374",
@@ -842,11 +908,13 @@ renderCards(DESTINATIONS);
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getDatabase(app);
 
-  const authOverlay  = document.getElementById('authOverlay');
-  const emailInput   = document.getElementById('emailInput');
+  const authOverlay   = document.getElementById('authOverlay');
+  const emailInput    = document.getElementById('emailInput');
   const passwordInput = document.getElementById('passwordInput');
 
+  // ── 인증 ──
   document.getElementById('loginBtn').addEventListener('click', async () => {
     const email = emailInput.value.trim(), pw = passwordInput.value.trim();
     if (!email || !pw) { alert('이메일과 비밀번호를 모두 입력해주세요.'); return; }
@@ -864,27 +932,81 @@ renderCards(DESTINATIONS);
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
+  [emailInput, passwordInput].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); })
+  );
+
+  let plansRef = null;
+
   onAuthStateChanged(auth, user => {
     if (user) {
       authOverlay.classList.add('hidden');
       document.getElementById('navUserEmail').textContent = user.email;
       document.getElementById('logoutBtn').classList.remove('hidden');
       emailInput.value = ''; passwordInput.value = '';
+      startPlansListener(user.uid);
     } else {
       authOverlay.classList.remove('hidden');
       document.getElementById('navUserEmail').textContent = '';
       document.getElementById('logoutBtn').classList.add('hidden');
+      if (plansRef) { off(plansRef); plansRef = null; }
+      document.getElementById('planList').innerHTML = '<div class="plan-empty">로그인 후 여행 계획을 저장할 수 있습니다.</div>';
     }
   });
 
-  [emailInput, passwordInput].forEach(el =>
-    el.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); })
-  );
+  // ── 여행 계획 저장/조회/삭제 ──
+  function startPlansListener(uid) {
+    if (plansRef) off(plansRef);
+    plansRef = ref(db, `users/${uid}/plans`);
+    onValue(plansRef, snap => renderPlans(snap.val()));
+  }
+
+  document.getElementById('planAddBtn').addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) { alert('로그인이 필요합니다.'); return; }
+    const city = document.getElementById('planDestSelect').value;
+    const memo = document.getElementById('planMemoInput').value.trim();
+    if (!city) { alert('여행지를 선택해주세요.'); return; }
+    if (!memo) { alert('메모를 입력해주세요.'); return; }
+    const newRef = push(ref(db, `users/${user.uid}/plans`));
+    await set(newRef, { city, memo, createdAt: new Date().toLocaleString('ko-KR') });
+    document.getElementById('planDestSelect').value = '';
+    document.getElementById('planMemoInput').value  = '';
+  });
+
+  window.deletePlan = async function(uid, id) {
+    if (!confirm('이 여행 계획을 삭제할까요?')) return;
+    await remove(ref(db, `users/${uid}/plans/${id}`));
+  };
+
+  function renderPlans(data) {
+    const list = document.getElementById('planList');
+    if (!data) { list.innerHTML = '<div class="plan-empty">저장된 여행 계획이 없습니다. 위에서 추가해보세요!</div>'; return; }
+    const uid = auth.currentUser?.uid;
+    list.innerHTML = Object.entries(data).reverse().map(([id, p]) => `
+      <div class="plan-item">
+        <div class="plan-item-left">
+          <div class="plan-city">${escHTML(p.city)}</div>
+          <div class="plan-memo">${escHTML(p.memo)}</div>
+          <div class="plan-date">📅 ${p.createdAt}</div>
+        </div>
+        <button class="btn-plan-del" onclick="deletePlan('${uid}','${id}')">삭제</button>
+      </div>
+    `).join('');
+  }
+
+  function escHTML(t) {
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
   function errMsg(code) {
-    return { 'auth/email-already-in-use':'이미 가입된 이메일입니다.', 'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
-      'auth/weak-password':'비밀번호가 너무 약합니다.', 'auth/user-not-found':'가입되지 않은 이메일입니다.',
-      'auth/wrong-password':'비밀번호가 올바르지 않습니다.', 'auth/invalid-credential':'이메일 또는 비밀번호가 올바르지 않습니다.',
+    return {
+      'auth/email-already-in-use':'이미 가입된 이메일입니다.',
+      'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
+      'auth/weak-password':'비밀번호가 너무 약합니다.',
+      'auth/user-not-found':'가입되지 않은 이메일입니다.',
+      'auth/wrong-password':'비밀번호가 올바르지 않습니다.',
+      'auth/invalid-credential':'이메일 또는 비밀번호가 올바르지 않습니다.',
     }[code] ?? `오류: ${code}`;
   }
 </script>
