@@ -1,705 +1,893 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>장애 유형별 일본 여행지 추천</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>일본 무장애 여행 가이드 | 장애 유형별 여행지 추천</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #fff0f0, #fff8e1);
-      font-family: Arial, sans-serif;
-      color: #333;
-    }
+  :root {
+    --sakura: #E8A0B4;
+    --sakura-light: #FDE8F0;
+    --navy: #1B3A6B;
+    --navy-mid: #2A5298;
+    --cream: #FDF8F0;
+    --lime: #6BBF72;
+    --lime-light: #EAF5EB;
+    --amber: #F5A623;
+    --amber-light: #FEF6E4;
+    --text-main: #1A1A2E;
+    --text-muted: #6B7280;
+    --border: rgba(27,58,107,0.12);
+    --white: #FFFFFF;
+    --shadow: 0 2px 12px rgba(27,58,107,0.10);
+  }
 
-    .container {
-      width: min(900px, 92%);
-      margin: 40px auto;
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.16);
-    }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--cream); color: var(--text-main); min-height: 100vh; }
 
-    h1 {
-      margin: 0 0 8px;
-      text-align: center;
-      font-size: 28px;
-      color: #c0392b;
-    }
+  .hidden { display: none !important; }
 
-    h2 {
-      margin-top: 0;
-      font-size: 22px;
-    }
+  /* ── AUTH ── */
+  .auth-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: linear-gradient(135deg, #1B3A6B 0%, #2A5298 60%, #3D6FAF 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .auth-box {
+    background: white; border-radius: 24px; padding: 40px 36px;
+    width: min(420px, calc(100vw - 2rem));
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .auth-box h2 { font-size: 1.4rem; font-weight: 900; color: var(--navy); text-align: center; margin-bottom: 4px; }
+  .auth-box p { font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 8px; }
+  .auth-input {
+    height: 48px; padding: 0 16px;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-size: 15px; font-family: inherit; outline: none;
+    transition: border-color 0.2s;
+  }
+  .auth-input:focus { border-color: var(--navy-mid); box-shadow: 0 0 0 3px rgba(42,82,152,0.12); }
+  .btn-auth {
+    height: 48px; border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: 0.15s;
+  }
+  .btn-auth:hover { transform: translateY(-2px); opacity: 0.92; }
+  .btn-login  { background: var(--navy); color: white; }
+  .btn-signup { background: var(--sakura); color: white; }
+  .auth-notice {
+    background: #fff8e1; border-radius: 10px; padding: 12px 14px;
+    font-size: 0.82rem; color: #6d4c41; line-height: 1.6; text-align: center;
+  }
 
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 28px;
-      font-size: 14px;
-    }
+  /* ── NAV ── */
+  nav {
+    background: var(--white); border-bottom: 1.5px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    text-decoration: none;
+  }
+  .nav-logo .torii { font-size: 1.5rem; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a { font-size: 0.9rem; color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--navy); }
+  .btn-bgm {
+    background: var(--sakura-light); border: 1px solid var(--sakura);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 0.8rem; cursor: pointer; color: #A0345A; font-weight: 700;
+    white-space: nowrap;
+  }
+  .btn-nav-logout {
+    background: none; border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 0.8rem; cursor: pointer; color: var(--text-muted); font-weight: 600;
+  }
+  .btn-nav-logout:hover { border-color: var(--navy); color: var(--navy); }
+  .nav-user { font-size: 0.8rem; color: var(--text-muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .auth-box {
-      max-width: 420px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #3D6FAF 100%);
+    color: white; padding: 80px 2rem 100px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 30%, rgba(232,160,180,0.18) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(232,160,180,0.22); border: 1px solid rgba(232,160,180,0.4);
+    border-radius: 100px; padding: 6px 16px; font-size: 0.8rem;
+    margin-bottom: 1.5rem; letter-spacing: 0.05em;
+  }
+  .hero h1 { font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.2; margin-bottom: 1rem; }
+  .hero h1 em { color: var(--sakura); font-style: normal; }
+  .hero p { font-size: 1.05rem; color: rgba(255,255,255,0.75); max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .hero-stats { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.8rem; font-weight: 900; color: var(--sakura); }
+  .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .hero-floats { position: absolute; right: 5%; top: 20%; display: flex; flex-direction: column; gap: 8px; opacity: 0.25; font-size: 2.2rem; line-height: 1; }
 
-    input {
-      height: 46px;
-      padding: 0 14px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 15px;
-      outline: none;
-    }
+  /* ── FILTER TABS ── */
+  .filter-section {
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center; overflow-x: auto; scrollbar-width: none;
+  }
+  .filter-section::-webkit-scrollbar { display: none; }
+  .filter-tab {
+    padding: 1rem 1.4rem; font-size: 0.9rem; font-weight: 500; color: var(--text-muted);
+    border-bottom: 2.5px solid transparent; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s; background: none; border-left: none; border-right: none; border-top: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-tab:hover { color: var(--navy); }
+  .filter-tab.active { color: var(--navy); border-bottom-color: var(--navy-mid); }
 
-    input:focus {
-      border-color: #e57373;
-      box-shadow: 0 0 0 3px rgba(229, 115, 115, 0.15);
-    }
+  /* ── MAIN ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-header { margin-bottom: 1.5rem; }
+  .section-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+  .section-header p { font-size: 0.9rem; color: var(--text-muted); }
 
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 0 16px;
-      height: 46px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.15s;
-      font-weight: bold;
-    }
+  /* ── CARDS ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 1.25rem; }
+  .dest-card {
+    background: var(--white); border-radius: 16px; border: 1px solid var(--border);
+    overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+  }
+  .dest-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(27,58,107,0.14); }
+  .card-header { padding: 1.25rem 1.25rem 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .card-city-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+  .card-title-group { flex: 1; }
+  .card-city { font-size: 1.15rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .card-region { font-size: 0.78rem; color: var(--text-muted); }
+  .card-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; white-space: nowrap; align-self: flex-start; }
+  .card-body { padding: 0 1.25rem 1.25rem; }
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .feature-list li { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; display: flex; align-items: flex-start; gap: 8px; }
+  .feature-list li::before { content: '✓'; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .card-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 0.72rem; padding: 3px 9px; border-radius: 100px; background: var(--cream); color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-detail { font-size: 0.8rem; font-weight: 600; color: var(--navy-mid); background: none; border: none; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; }
+  .btn-detail:hover { background: var(--sakura-light); }
 
-    button:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
-    }
+  .type-visual .card-city-icon { background: var(--sakura-light); }
+  .type-visual .feature-list li::before { color: var(--sakura); }
+  .type-visual .card-badge { background: var(--sakura-light); color: #A0345A; }
+  .type-hearing .card-city-icon { background: var(--lime-light); }
+  .type-hearing .feature-list li::before { color: var(--lime); }
+  .type-hearing .card-badge { background: var(--lime-light); color: #2E7A36; }
+  .type-mobility .card-city-icon { background: var(--amber-light); }
+  .type-mobility .feature-list li::before { color: var(--amber); }
+  .type-mobility .card-badge { background: var(--amber-light); color: #8A5E00; }
 
-    .login-btn  { background: #e53935; color: white; }
-    .signup-btn { background: #8e24aa; color: white; }
-    .logout-btn { background: #455a64; color: white; }
-    .add-btn    { background: #e53935; color: white; }
-    .refresh-btn { background: #43a047; color: white; margin-bottom: 16px; }
-    .edit-btn   { background: #ffca28; color: #333; }
-    .delete-btn { background: #ef5350; color: white; }
-    .save-btn   { background: #8e24aa; color: white; }
-    .cancel-btn { background: #b0bec5; color: white; }
+  /* ── AI 추천 섹션 ── */
+  .ai-section {
+    background: var(--white); border-radius: 20px; border: 1px solid var(--border);
+    padding: 2rem; margin-bottom: 2rem;
+  }
+  .ai-section h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+  .ai-section > p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .ai-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .ai-select, .ai-input {
+    height: 46px; padding: 0 14px; border: 1.5px solid var(--border);
+    border-radius: 12px; font-size: 15px; font-family: inherit; outline: none;
+    background: var(--cream); transition: border-color 0.2s;
+  }
+  .ai-select:focus, .ai-input:focus { border-color: var(--navy-mid); }
+  .btn-ai { background: var(--navy); color: white; height: 46px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.15s; }
+  .btn-ai:hover { opacity: 0.9; }
+  .ai-result {
+    background: var(--cream); border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px; white-space: pre-wrap; line-height: 1.7; font-size: 0.9rem;
+    min-height: 56px; color: var(--text-main);
+  }
+  .ai-loading { color: var(--text-muted); font-style: italic; }
 
-    .form-box {
-      display: grid;
-      grid-template-columns: 1fr 2fr auto;
-      gap: 10px;
-      margin-bottom: 22px;
-    }
+  /* ── 수화 인식 ── */
+  .yolo-section { background: var(--navy); border-radius: 20px; padding: 2rem; color: white; margin-bottom: 2rem; }
+  .yolo-section h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .yolo-section > p { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 1.25rem; }
+  .yolo-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 22px;
-      padding: 14px;
-      border-radius: 16px;
-      background: #fff8f8;
-    }
+  .video-box {
+    background: #0D2040; border-radius: 12px; aspect-ratio: 4/3;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.75rem; border: 1.5px dashed rgba(232,160,180,0.3);
+    position: relative; overflow: hidden;
+  }
+  #yolo-video { width: 100%; height: 100%; object-fit: cover; display: none; border-radius: 12px; }
+  #yolo-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .video-placeholder { text-align: center; }
+  .video-placeholder .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .video-placeholder p { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
 
-    .user-info {
-      font-size: 14px;
-      color: #555;
-      word-break: break-all;
-    }
+  .yolo-result-box { background: #0D2040; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .result-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; }
+  .detected-sign { font-size: 2.5rem; font-weight: 900; color: var(--sakura); min-height: 52px; }
+  .confidence-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+  .confidence-fill { height: 100%; background: var(--sakura); border-radius: 3px; width: 0%; transition: width 0.4s; }
+  .sign-history { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sign-chip { font-size: 0.75rem; padding: 4px 10px; border-radius: 100px; background: rgba(232,160,180,0.2); color: var(--sakura); }
+  .yolo-controls { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+  .btn-yolo { flex: 1; padding: 10px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; }
+  .btn-yolo-start { background: var(--sakura); color: white; }
+  .btn-yolo-start:hover { background: #D4708C; }
+  .btn-yolo-stop  { background: rgba(255,255,255,0.1); color: white; }
+  .btn-yolo-stop:hover  { background: rgba(255,255,255,0.2); }
 
-    .status {
-      min-height: 24px;
-      margin-bottom: 14px;
-      color: #555;
-      font-size: 14px;
-    }
+  .sign-ref summary { cursor: pointer; font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.75rem; }
+  .sign-ref img { width: 100%; max-width: 340px; display: block; margin: 10px auto 0; border-radius: 10px; opacity: 0.9; }
+  .yolo-status { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 4px; }
 
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  /* ── CHATBOT ── */
+  .chat-fab {
+    position: fixed; bottom: 2rem; right: 2rem;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--navy); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(27,58,107,0.35);
+    font-size: 1.5rem; z-index: 200; border: none; transition: transform 0.2s; color: white;
+  }
+  .chat-fab:hover { transform: scale(1.08); }
+  .fab-badge {
+    position: absolute; top: -2px; right: -2px;
+    width: 18px; height: 18px; background: var(--sakura);
+    border-radius: 50%; border: 2px solid var(--cream);
+    font-size: 0.65rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;
+  }
+  .chat-panel {
+    position: fixed; bottom: 6rem; right: 2rem;
+    width: 380px; max-height: 540px; background: var(--white);
+    border-radius: 20px; box-shadow: 0 12px 48px rgba(27,58,107,0.18);
+    display: flex; flex-direction: column; z-index: 199; overflow: hidden;
+    border: 1px solid var(--border);
+    transform: scale(0.85) translateY(20px); opacity: 0; pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+  .chat-header { background: var(--navy); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; color: white; }
+  .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--sakura); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+  .chat-header-info h4 { font-size: 0.9rem; font-weight: 700; }
+  .chat-header-info p { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+  .chat-close { margin-left: auto; background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; padding: 4px; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; scrollbar-width: thin; }
+  .msg { display: flex; gap: 8px; align-items: flex-end; max-width: 85%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-bubble { padding: 10px 14px; border-radius: 16px; font-size: 0.87rem; line-height: 1.55; }
+  .msg.bot  .msg-bubble { background: var(--cream); color: var(--text-main); border-bottom-left-radius: 4px; }
+  .msg.user .msg-bubble { background: var(--navy); color: white; border-bottom-right-radius: 4px; }
+  .msg-bot-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--sakura-light); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+  .chat-quick-replies { padding: 0 1rem 0.5rem; display: flex; gap: 6px; flex-wrap: wrap; }
+  .quick-reply { font-size: 0.78rem; padding: 5px 12px; border: 1px solid var(--border); border-radius: 100px; background: none; cursor: pointer; color: var(--navy); transition: all 0.2s; }
+  .quick-reply:hover { background: var(--navy); color: white; border-color: var(--navy); }
+  .chat-input-row { padding: 0.75rem 1rem; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .chat-input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 100px; font-size: 0.87rem; font-family: inherit; outline: none; transition: border-color 0.2s; background: var(--cream); }
+  .chat-input:focus { border-color: var(--navy-mid); }
+  .chat-send { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; transition: background 0.2s; }
+  .chat-send:hover { background: var(--navy-mid); }
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 8px 0; }
+  .typing-indicator span { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
 
-    .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 16px;
-      border-radius: 16px;
-      background: #fff8f8;
-      border: 1px solid #fce4e4;
-    }
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--white); border-radius: 20px; padding: 2rem; max-width: 480px; width: calc(100% - 2rem); max-height: 80vh; overflow-y: auto; transform: scale(0.9); transition: transform 0.25s; }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-city { font-size: 1.5rem; font-weight: 900; color: var(--navy); margin-bottom: 0.5rem; }
+  .modal-type-badge { display: inline-block; font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 100px; margin-bottom: 1.25rem; }
+  .modal-section { margin-bottom: 1.25rem; }
+  .modal-section h4 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .modal-close-btn { width: 100%; margin-top: 1rem; padding: 12px; background: var(--navy); color: white; border: none; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; }
 
-    .item-title {
-      margin: 0 0 6px;
-      font-size: 18px;
-      font-weight: bold;
-    }
+  /* ── FOOTER ── */
+  footer { background: var(--navy); color: rgba(255,255,255,0.6); text-align: center; padding: 2rem; font-size: 0.82rem; }
+  footer strong { color: white; }
 
-    .item-content {
-      margin: 0;
-      color: #555;
-      line-height: 1.5;
-      word-break: break-all;
-    }
-
-    .item-date {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #999;
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .edit-box {
-      display: grid;
-      grid-template-columns: 1fr 2fr auto auto;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 30px;
-      color: #888;
-      background: #fff8f8;
-      border-radius: 16px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .notice {
-      max-width: 620px;
-      margin: 20px auto 0;
-      padding: 14px;
-      border-radius: 14px;
-      background: #fff8e1;
-      color: #6d4c41;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .ai-section {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 2px dashed #fce4e4;
-    }
-
-    .ai-section h3 {
-      margin: 0 0 16px;
-      font-size: 18px;
-      color: #c0392b;
-    }
-
-    .ai-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    select {
-      height: 46px;
-      padding: 0 14px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 15px;
-      outline: none;
-      background: white;
-    }
-
-    select:focus {
-      border-color: #e57373;
-      box-shadow: 0 0 0 3px rgba(229, 115, 115, 0.15);
-    }
-
-    .ai-btn {
-      background: #c0392b;
-      color: white;
-      height: 46px;
-    }
-
-    .ai-result {
-      background: #fff8f8;
-      border: 1px solid #fce4e4;
-      border-radius: 16px;
-      padding: 20px;
-      white-space: pre-wrap;
-      line-height: 1.7;
-      font-size: 15px;
-      min-height: 60px;
-      color: #333;
-    }
-
-    .ai-loading {
-      color: #999;
-      font-style: italic;
-    }
-
-    @media (max-width: 700px) {
-      .form-box,
-      .item,
-      .edit-box,
-      .top-bar {
-        grid-template-columns: 1fr;
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .item-actions {
-        justify-content: flex-end;
-      }
-    }
-  </style>
+  @media (max-width: 640px) {
+    .hero { padding: 60px 1.25rem 80px; }
+    .hero-floats { display: none; }
+    .yolo-inner { grid-template-columns: 1fr; }
+    .chat-panel { width: calc(100vw - 2rem); right: 1rem; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .main { padding: 1.5rem 1rem; }
+    .nav-user { display: none; }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>🗾 장애 유형별 일본 여행지 추천</h1>
-    <div class="subtitle">장애 유형에 맞는 일본 여행지를 찾고 추천해보세요</div>
 
-    <!-- 로그인 화면 -->
-    <section id="authSection">
-      <div class="auth-box">
-        <h2>로그인 / 회원가입</h2>
-        <input id="emailInput" type="email" placeholder="이메일" />
-        <input id="passwordInput" type="password" placeholder="비밀번호 6자리 이상" />
-        <button class="login-btn" id="loginBtn">로그인</button>
-        <button class="signup-btn" id="signupBtn">회원가입</button>
-      </div>
+<!-- 배경음악 -->
+<audio id="bgmAudio" loop src="https://raw.githubusercontent.com/kang-teacher/japantravlel/main/backgroundsound.mp3"></audio>
 
-      <div class="notice">
-        처음 사용하는 이메일은 <strong>회원가입</strong>을 먼저 눌러주세요.<br />
-        이미 가입한 이메일은 <strong>로그인</strong> 버튼을 누르면 됩니다.
-      </div>
-    </section>
-
-    <!-- 로그인 후 메인 화면 -->
-    <section id="mainSection" class="hidden">
-      <div class="top-bar">
-        <div class="user-info">
-          로그인 계정: <strong id="userEmail"></strong>
-        </div>
-        <button class="logout-btn" id="logoutBtn">로그아웃</button>
-      </div>
-
-      <div class="form-box">
-        <input id="titleInput" type="text" placeholder="여행지 이름" />
-        <input id="contentInput" type="text" placeholder="추천 이유 또는 접근성 정보" />
-        <button class="add-btn" id="addBtn">추가</button>
-      </div>
-
-      <button class="refresh-btn" id="refreshBtn">데이터 새로고침</button>
-      <div id="status" class="status"></div>
-      <div id="dataList" class="list"></div>
-
-      <!-- AI 추천 섹션 -->
-      <div class="ai-section">
-        <h3>🤖 AI 여행지 추천받기</h3>
-        <div class="ai-form">
-          <select id="disabilitySelect">
-            <option value="">-- 장애 유형을 선택하세요 --</option>
-            <option value="지체장애 (휠체어 사용)">지체장애 (휠체어 사용)</option>
-            <option value="지체장애 (보행 보조기구 사용)">지체장애 (보행 보조기구 사용)</option>
-            <option value="시각장애">시각장애</option>
-            <option value="청각장애">청각장애</option>
-            <option value="발달장애">발달장애</option>
-            <option value="노인·고령자">노인·고령자</option>
-          </select>
-          <input id="prefInput" type="text" placeholder="추가 선호사항 (예: 자연, 온천, 역사 등) - 선택사항" />
-          <button class="ai-btn" id="aiBtn">AI 추천 받기</button>
-        </div>
-        <div id="aiResult" class="ai-result ai-loading">장애 유형을 선택하고 AI 추천을 받아보세요.</div>
-      </div>
-    </section>
+<!-- ── 로그인 오버레이 ── -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <h2>⛩️ 편안한 일본여행</h2>
+    <p>로그인하고 맞춤 여행지를 추천받으세요</p>
+    <input class="auth-input" id="emailInput" type="email" placeholder="이메일" />
+    <input class="auth-input" id="passwordInput" type="password" placeholder="비밀번호 (6자리 이상)" />
+    <button class="btn-auth btn-login"  id="loginBtn">로그인</button>
+    <button class="btn-auth btn-signup" id="signupBtn">회원가입</button>
+    <div class="auth-notice">처음 방문이라면 <strong>회원가입</strong>을 먼저 눌러주세요</div>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
-      getDatabase,
-      ref,
-      push,
-      set,
-      update,
-      remove,
-      onValue,
-      off
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <span class="torii">⛩️</span>편안한 일본여행
+  </a>
+  <ul class="nav-links">
+    <li><a href="#destinations">여행지</a></li>
+    <li><a href="#sign-lang">수화인식</a></li>
+    <li><a href="#ai-recommend">AI추천</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-bgm" id="bgmBtn">🔇 배경음악</button>
+    <span class="nav-user" id="navUserEmail"></span>
+    <button class="btn-nav-logout hidden" id="logoutBtn">로그아웃</button>
+  </div>
+</nav>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBAoxaZR7nj8NAFsM1WgFL0ZEF8PAdl8Dc",
-      authDomain: "travel-3971e.firebaseapp.com",
-      projectId: "travel-3971e",
-      storageBucket: "travel-3971e.firebasestorage.app",
-      messagingSenderId: "80463163374",
-      appId: "1:80463163374:web:800b8052cd4351d51968ff",
-      measurementId: "G-K60RWRQP92"
-    };
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-floats">🌸<br>🗻<br>🍜<br>🎎</div>
+  <div class="hero-badge">♿ 모두를 위한 여행 가이드</div>
+  <h1>장애 유형별<br><em>일본 여행지</em> 추천</h1>
+  <p>시각장애·청각장애·지체장애 학생 모두가 안심하고 즐길 수 있는 일본 여행지를 엄선했습니다.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">장애 유형</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">추천 도시</div></div>
+    <div class="stat"><div class="stat-num">AI</div><div class="stat-label">맞춤 상담</div></div>
+  </div>
+</section>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
+<!-- ── FILTER TABS ── -->
+<div class="filter-section" id="destinations">
+  <button class="filter-tab active" onclick="filterCards('all', this)">🗾 전체 보기</button>
+  <button class="filter-tab" onclick="filterCards('visual', this)">👁️ 시각장애</button>
+  <button class="filter-tab" onclick="filterCards('hearing', this)">👂 청각장애</button>
+  <button class="filter-tab" onclick="filterCards('mobility', this)">♿ 지체장애</button>
+</div>
 
-    const authSection = document.getElementById('authSection');
-    const mainSection = document.getElementById('mainSection');
+<!-- ── MAIN ── -->
+<main class="main">
 
-    const emailInput = document.getElementById('emailInput');
-    const passwordInput = document.getElementById('passwordInput');
-    const loginBtn = document.getElementById('loginBtn');
-    const signupBtn = document.getElementById('signupBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    const userEmail = document.getElementById('userEmail');
-    const titleInput = document.getElementById('titleInput');
-    const contentInput = document.getElementById('contentInput');
-    const addBtn = document.getElementById('addBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const dataList = document.getElementById('dataList');
-    const statusBox = document.getElementById('status');
-
-    let currentUser = null;
-    let currentItemsRef = null;
-
-    function setStatus(message) {
-      statusBox.textContent = message;
-    }
-
-    function getEmailAndPassword() {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      if (!email || !password) {
-        alert('이메일과 비밀번호를 모두 입력해주세요.');
-        return null;
-      }
-
-      if (password.length < 6) {
-        alert('비밀번호는 6자리 이상이어야 합니다.');
-        return null;
-      }
-
-      return { email, password };
-    }
-
-    signupBtn.addEventListener('click', async () => {
-      const account = getEmailAndPassword();
-      if (!account) return;
-
-      try {
-        await createUserWithEmailAndPassword(auth, account.email, account.password);
-        alert('회원가입이 완료되었습니다.');
-      } catch (error) {
-        alert(getKoreanErrorMessage(error.code));
-      }
-    });
-
-    loginBtn.addEventListener('click', async () => {
-      const account = getEmailAndPassword();
-      if (!account) return;
-
-      try {
-        await signInWithEmailAndPassword(auth, account.email, account.password);
-      } catch (error) {
-        alert(getKoreanErrorMessage(error.code));
-      }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        alert('로그아웃에 실패했습니다.');
-      }
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUser = user;
-        showMainPage(user);
-        startRealtimeDataListener(user.uid);
-      } else {
-        currentUser = null;
-        showAuthPage();
-        stopRealtimeDataListener();
-      }
-    });
-
-    function showMainPage(user) {
-      authSection.classList.add('hidden');
-      mainSection.classList.remove('hidden');
-      userEmail.textContent = user.email;
-      emailInput.value = '';
-      passwordInput.value = '';
-    }
-
-    function showAuthPage() {
-      authSection.classList.remove('hidden');
-      mainSection.classList.add('hidden');
-      userEmail.textContent = '';
-      dataList.innerHTML = '';
-    }
-
-    function startRealtimeDataListener(uid) {
-      stopRealtimeDataListener();
-      setStatus('데이터를 불러오는 중입니다...');
-
-      currentItemsRef = ref(database, `users/${uid}/items`);
-
-      onValue(currentItemsRef, (snapshot) => {
-        const data = snapshot.val();
-        renderData(data);
-        setStatus('데이터가 실시간으로 동기화되었습니다.');
-      }, (error) => {
-        console.error(error);
-        setStatus('데이터를 불러오지 못했습니다. Firebase 보안 규칙을 확인하세요.');
-      });
-    }
-
-    function stopRealtimeDataListener() {
-      if (currentItemsRef) {
-        off(currentItemsRef);
-        currentItemsRef = null;
-      }
-    }
-
-    addBtn.addEventListener('click', addData);
-    refreshBtn.addEventListener('click', () => {
-      if (currentUser) {
-        startRealtimeDataListener(currentUser.uid);
-      }
-    });
-
-    async function addData() {
-      if (!currentUser) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
-
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
-
-      if (!title || !content) {
-        alert('여행지 이름과 정보를 모두 입력해주세요.');
-        return;
-      }
-
-      try {
-        const itemsRef = ref(database, `users/${currentUser.uid}/items`);
-        const newItemRef = push(itemsRef);
-
-        await set(newItemRef, {
-          title,
-          content,
-          createdAt: new Date().toLocaleString('ko-KR'),
-          updatedAt: ''
-        });
-
-        titleInput.value = '';
-        contentInput.value = '';
-      } catch (error) {
-        console.error(error);
-        alert('데이터 추가에 실패했습니다.');
-      }
-    }
-
-    window.deleteData = async function(id) {
-      if (!currentUser) return;
-
-      const isConfirmed = confirm('정말 삭제하시겠습니까?');
-      if (!isConfirmed) return;
-
-      try {
-        await remove(ref(database, `users/${currentUser.uid}/items/${id}`));
-      } catch (error) {
-        console.error(error);
-        alert('데이터 삭제에 실패했습니다.');
-      }
-    };
-
-    window.updateData = async function(id) {
-      if (!currentUser) return;
-
-      const editTitle = document.getElementById(`edit-title-${id}`).value.trim();
-      const editContent = document.getElementById(`edit-content-${id}`).value.trim();
-
-      if (!editTitle || !editContent) {
-        alert('수정할 여행지 이름과 정보를 모두 입력해주세요.');
-        return;
-      }
-
-      try {
-        await update(ref(database, `users/${currentUser.uid}/items/${id}`), {
-          title: editTitle,
-          content: editContent,
-          updatedAt: new Date().toLocaleString('ko-KR')
-        });
-      } catch (error) {
-        console.error(error);
-        alert('데이터 수정에 실패했습니다.');
-      }
-    };
-
-    function renderData(data) {
-      dataList.innerHTML = '';
-
-      if (!data) {
-        dataList.innerHTML = '<div class="empty">아직 저장된 여행지가 없습니다.</div>';
-        return;
-      }
-
-      const entries = Object.entries(data).reverse();
-
-      entries.forEach(([id, item]) => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.id = `item-${id}`;
-
-        div.innerHTML = `
-          <div>
-            <p class="item-title">${escapeHTML(item.title || '')}</p>
-            <p class="item-content">${escapeHTML(item.content || '')}</p>
-            <div class="item-date">
-              등록: ${item.createdAt || '-'}
-              ${item.updatedAt ? ` / 수정: ${item.updatedAt}` : ''}
-            </div>
+  <!-- 수화 인식 -->
+  <section class="yolo-section" id="sign-lang">
+    <h3>🤟 수화 실시간 인식</h3>
+    <p>YOLO 모델 기반 실시간 수화 인식 — 카메라에 알파벳 수화를 보여주세요</p>
+    <div class="yolo-inner">
+      <div>
+        <div class="video-box">
+          <video id="yolo-video" autoplay muted playsinline></video>
+          <canvas id="yolo-canvas"></canvas>
+          <div class="video-placeholder" id="video-placeholder">
+            <div class="icon">📷</div>
+            <p>카메라를 시작하여<br>수화를 인식하세요</p>
           </div>
-          <div class="item-actions">
-            <button class="edit-btn" onclick="showEditForm('${id}', '${escapeForAttribute(item.title || '')}', '${escapeForAttribute(item.content || '')}')">수정</button>
-            <button class="delete-btn" onclick="deleteData('${id}')">삭제</button>
-          </div>
-        `;
-
-        dataList.appendChild(div);
-      });
-    }
-
-    window.showEditForm = function(id, title, content) {
-      const itemBox = document.getElementById(`item-${id}`);
-
-      itemBox.innerHTML = `
-        <div class="edit-box">
-          <input id="edit-title-${id}" type="text" value="${title}" />
-          <input id="edit-content-${id}" type="text" value="${content}" />
-          <button class="save-btn" onclick="updateData('${id}')">저장</button>
-          <button class="cancel-btn" onclick="startRealtimeDataListener(currentUser.uid)">취소</button>
         </div>
-      `;
-    };
+        <details class="sign-ref">
+          <summary>📖 수화 알파벳 참고표 보기</summary>
+          <img src="https://raw.githubusercontent.com/kang-teacher/japantravlel/main/handsign.jpg" alt="수화 알파벳 참고표" />
+        </details>
+      </div>
+      <div class="yolo-result-box">
+        <div>
+          <div class="result-label">인식된 수화</div>
+          <div class="detected-sign" id="detected-sign">—</div>
+          <div class="yolo-status" id="yolo-status">카메라를 시작해주세요</div>
+        </div>
+        <div>
+          <div class="result-label" style="margin-bottom:6px;">인식 신뢰도</div>
+          <div class="confidence-bar"><div class="confidence-fill" id="conf-fill"></div></div>
+          <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:4px;" id="conf-text">0%</div>
+        </div>
+        <div>
+          <div class="result-label" style="margin-bottom:6px;">인식 기록</div>
+          <div class="sign-history" id="sign-history"></div>
+        </div>
+        <div class="yolo-controls">
+          <button class="btn-yolo btn-yolo-start" id="yoloStartBtn">카메라 시작</button>
+          <button class="btn-yolo btn-yolo-stop"  id="yoloStopBtn">정지</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    function escapeHTML(text) {
-      return String(text)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-    }
+  <!-- AI 맞춤 추천 -->
+  <section class="ai-section" id="ai-recommend">
+    <h3>🤖 AI 맞춤 여행지 추천</h3>
+    <p>장애 유형을 선택하면 Claude AI가 최적의 일본 여행지를 추천해드립니다</p>
+    <div class="ai-form">
+      <select class="ai-select" id="disabilitySelect">
+        <option value="">-- 장애 유형을 선택하세요 --</option>
+        <option value="지체장애 (휠체어 사용)">지체장애 (휠체어 사용)</option>
+        <option value="지체장애 (보행 보조기구 사용)">지체장애 (보행 보조기구 사용)</option>
+        <option value="시각장애">시각장애</option>
+        <option value="청각장애">청각장애</option>
+        <option value="발달장애">발달장애</option>
+        <option value="노인·고령자">노인·고령자</option>
+      </select>
+      <input class="ai-input" id="prefInput" type="text" placeholder="추가 선호사항 (예: 자연, 온천, 역사 등) — 선택사항" />
+      <button class="btn-ai" id="aiBtn">AI 추천 받기</button>
+    </div>
+    <div class="ai-result ai-loading" id="aiResult">장애 유형을 선택하고 AI 추천을 받아보세요.</div>
+  </section>
 
-    function escapeForAttribute(text) {
-      return escapeHTML(text).replaceAll('`', '&#096;');
-    }
+  <!-- 여행지 카드 -->
+  <div class="section-header">
+    <h2 id="section-title">🗾 모든 추천 여행지</h2>
+    <p id="section-desc">장애 유형과 특성에 맞게 검증된 일본 여행지입니다</p>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
 
-    function getKoreanErrorMessage(code) {
-      switch (code) {
-        case 'auth/email-already-in-use':
-          return '이미 가입된 이메일입니다.';
-        case 'auth/invalid-email':
-          return '이메일 형식이 올바르지 않습니다.';
-        case 'auth/weak-password':
-          return '비밀번호가 너무 약합니다. 6자리 이상으로 입력해주세요.';
-        case 'auth/user-not-found':
-          return '가입되지 않은 이메일입니다.';
-        case 'auth/wrong-password':
-          return '비밀번호가 올바르지 않습니다.';
-        case 'auth/invalid-credential':
-          return '이메일 또는 비밀번호가 올바르지 않습니다.';
-        case 'auth/network-request-failed':
-          return '네트워크 연결을 확인해주세요.';
-        default:
-          return `오류가 발생했습니다: ${code}`;
-      }
-    }
+</main>
 
-    // Render 배포 후 아래 URL을 실제 주소로 교체하세요
-    const RENDER_API_URL = 'https://japan-mt74.onrender.com';
+<footer id="about">
+  <p><strong>편안한 일본여행 가이드</strong></p>
+  <p style="margin-top:0.5rem;">YOLO 수화인식 · Claude AI 상담 · Firebase 인증 기반</p>
+  <p style="margin-top:0.5rem;">모든 학생이 자유롭게 여행할 수 있는 세상을 꿈꿉니다 🌸</p>
+</footer>
 
-    const aiBtn = document.getElementById('aiBtn');
-    const aiResult = document.getElementById('aiResult');
-    const disabilitySelect = document.getElementById('disabilitySelect');
-    const prefInput = document.getElementById('prefInput');
+<!-- 챗봇 FAB -->
+<button class="chat-fab" onclick="toggleChat()">
+  💬<span class="fab-badge">AI</span>
+</button>
 
-    aiBtn.addEventListener('click', async () => {
-      const disability_type = disabilitySelect.value;
-      if (!disability_type) {
-        alert('장애 유형을 선택해주세요.');
-        return;
-      }
+<!-- 챗봇 패널 -->
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <div class="chat-avatar">🌸</div>
+    <div class="chat-header-info">
+      <h4>하나코 (AI 여행 상담사)</h4>
+      <p>편안한 일본여행 전문 AI</p>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg bot">
+      <div class="msg-bot-icon">🌸</div>
+      <div class="msg-bubble">안녕하세요! 편안한 일본여행 전문 AI 하나코입니다.<br><br>장애 유형에 맞는 여행지, 이동 방법, 숙소 등 무엇이든 물어보세요! 🇯🇵</div>
+    </div>
+  </div>
+  <div class="chat-quick-replies" id="quick-replies">
+    <button class="quick-reply" onclick="sendQuick('시각장애 여행지 추천해줘')">👁️ 시각장애</button>
+    <button class="quick-reply" onclick="sendQuick('청각장애인이 가기 좋은 곳은?')">👂 청각장애</button>
+    <button class="quick-reply" onclick="sendQuick('휠체어로 이동하기 좋은 도시는?')">♿ 휠체어</button>
+    <button class="quick-reply" onclick="sendQuick('도쿄 편안한 관광 팁 알려줘')">🗼 도쿄 팁</button>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text" placeholder="궁금한 점을 물어보세요..."
+      onkeydown="if(event.key==='Enter') sendMessage()">
+    <button class="chat-send" onclick="sendMessage()">➤</button>
+  </div>
+</div>
 
-      aiBtn.disabled = true;
-      aiBtn.textContent = '추천 중...';
-      aiResult.className = 'ai-result ai-loading';
-      aiResult.textContent = 'AI가 여행지를 찾고 있습니다...';
+<!-- 상세 모달 -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
 
-      try {
-        const res = await fetch(`${RENDER_API_URL}/api/recommend`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            disability_type,
-            preferences: prefInput.value.trim()
-          })
-        });
+<!-- ONNX Runtime -->
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
 
-        if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+<script>
+// ── Render 백엔드 URL ──
+const RENDER_API_URL = 'https://japan-mt74.onrender.com';
 
-        const data = await res.json();
-        aiResult.className = 'ai-result';
-        aiResult.textContent = data.result;
-      } catch (error) {
-        aiResult.className = 'ai-result';
-        aiResult.textContent = `오류가 발생했습니다: ${error.message}\nRender 서버 URL을 확인해주세요.`;
-      } finally {
-        aiBtn.disabled = false;
-        aiBtn.textContent = 'AI 추천 받기';
-      }
+// ── 여행지 데이터 ──
+const DESTINATIONS = [
+  { id:'tokyo-visual', type:'visual', city:'도쿄', region:'간토 지방 · 도쿄도', icon:'🗼', badge:'시각장애 추천',
+    features:['점자블록(유도블록) 체계가 전국 최고 수준','지하철·JR역 음성 안내 시스템 완비','박물관·공공시설 음성 가이드 제공','보행 환경이 넓고 정비 상태 우수'],
+    tags:['음성안내','점자블록','대중교통','공공시설'],
+    detail:'도쿄는 일본에서 시각장애인을 위한 인프라가 가장 잘 갖춰진 도시입니다. 점자블록이 주요 역부터 관광지까지 촘촘하게 깔려 있으며, 음성 안내 시스템은 여러 외국어를 지원합니다.' },
+  { id:'kyoto-visual', type:'visual', city:'교토', region:'킨키 지방 · 교토부', icon:'⛩️', badge:'시각장애 추천',
+    features:['사찰의 향기·종소리·자갈길 촉감으로 오감 체험','일부 사찰 촉각 체험 특별 프로그램 운영','주요 관광지 동선이 비교적 단순'],
+    tags:['오감체험','사찰','촉각프로그램','단순동선'],
+    detail:'교토는 시각 외에도 청각·촉각·후각을 활용한 여행이 가능한 특별한 도시입니다. 금각사, 아라시야마 대나무숲의 바람소리, 향냄새 가득한 전통 거리가 풍부한 감각적 경험을 제공합니다.' },
+  { id:'osaka-hearing', type:'hearing', city:'오사카', region:'킨키 지방 · 오사카부', icon:'🏯', badge:'청각장애 추천',
+    features:['관광 안내 표지판이 시각적으로 매우 잘 정리됨','디지털 안내판·문자 안내 체계 완비','관광 동선이 단순해 길 찾기 편리'],
+    tags:['시각안내','디지털안내판','단순동선','도시관광'],
+    detail:'오사카는 도톤보리, 유니버설 스튜디오 재팬 등 시각적으로 즐길 수 있는 콘텐츠가 풍부합니다. 문자 기반 안내 시스템이 잘 갖춰져 있어 청각장애인이 독립적으로 여행하기 좋습니다.' },
+  { id:'yokohama-hearing', type:'hearing', city:'요코하마', region:'간토 지방 · 가나가와현', icon:'⚓', badge:'청각장애 추천',
+    features:['도시 구조가 비교적 단순하고 직관적','지도·표지판이 직관적으로 구성','관광 동선이 넓고 개방적인 항구 도시'],
+    tags:['항구도시','직관적표지판','개방동선','야경'],
+    detail:'요코하마는 미나토미라이 지구를 중심으로 한 항구 도시로, 넓은 공간과 명확한 시각 안내 시스템이 특징입니다.' },
+  { id:'tokyo-mobility', type:'mobility', city:'도쿄', region:'간토 지방 · 도쿄도', icon:'🗼', badge:'휠체어 추천',
+    features:['지하철 엘리베이터·리프트 설치율 높음','저상버스 광범위 운영','대부분의 역 다목적 화장실 구비','오다이바 등 평지 중심 관광지 다수'],
+    tags:['엘리베이터','저상버스','다목적화장실','배리어프리'],
+    detail:'도쿄는 일본 전체에서 휠체어 접근성이 가장 뛰어난 도시입니다. 도쿄 메트로와 JR 모두 대부분의 역에 엘리베이터가 설치되어 있습니다.' },
+  { id:'sapporo-mobility', type:'mobility', city:'삿포로', region:'홋카이도 지방', icon:'❄️', badge:'휠체어 추천',
+    features:['바둑판형 도시 구조로 이동 경로 단순','인도 폭이 넓어 휠체어 이동 용이','관광지 간 거리 예측이 쉬움'],
+    tags:['넓은인도','격자도로','이동편리','겨울여행'],
+    detail:'삿포로는 메이지 시대 근대 도시 계획으로 설계된 바둑판형 도로 구조가 특징입니다. 넓은 보도와 예측 가능한 도로 패턴 덕분에 휠체어 사용자도 지도 없이 이동하기 편리합니다.' },
+  { id:'fukuoka-mobility', type:'mobility', city:'후쿠오카', region:'규슈 지방 · 후쿠오카현', icon:'🍜', badge:'휠체어 추천',
+    features:['공항과 도심 접근성 최고 수준 (지하철 2정거장)','이동 동선이 짧아 체력 소모 최소화','실내 관광지·대형 쇼핑몰 접근성 우수'],
+    tags:['공항접근','짧은동선','실내관광','쇼핑몰'],
+    detail:'후쿠오카는 일본 규슈의 관문 도시로, 하카타 역을 중심으로 관광지, 맛집, 쇼핑몰이 집중되어 있습니다.' }
+];
+
+// ── 카드 렌더링 ──
+function renderCards(data) {
+  document.getElementById('cards-grid').innerHTML = data.map(d => `
+    <article class="dest-card type-${d.type}" onclick="openModal('${d.id}')">
+      <div class="card-header">
+        <div class="card-city-icon">${d.icon}</div>
+        <div class="card-title-group">
+          <div class="card-city">${d.city}</div>
+          <div class="card-region">${d.region}</div>
+        </div>
+        <span class="card-badge">${d.badge}</span>
+      </div>
+      <div class="card-body">
+        <ul class="feature-list">${d.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+      </div>
+      <div class="card-footer">
+        <div class="card-tags">${d.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <button class="btn-detail" onclick="event.stopPropagation();openModal('${d.id}')">상세 →</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+function filterCards(type, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = {
+    all:      ['🗾 모든 추천 여행지', '장애 유형과 특성에 맞게 검증된 일본 여행지입니다'],
+    visual:   ['👁️ 시각장애 추천 여행지', '오감 체험과 음성·점자 안내 시스템이 우수한 곳을 엄선했습니다'],
+    hearing:  ['👂 청각장애 추천 여행지', '시각적 안내 체계와 문자 정보가 풍부한 도시를 추천합니다'],
+    mobility: ['♿ 지체장애 추천 여행지 (휠체어)', '엘리베이터, 저상버스, 배리어프리 환경이 잘 갖춰진 도시입니다']
+  };
+  document.getElementById('section-title').textContent = titles[type][0];
+  document.getElementById('section-desc').textContent  = titles[type][1];
+  renderCards(type === 'all' ? DESTINATIONS : DESTINATIONS.filter(d => d.type === type));
+}
+
+// ── 모달 ──
+function openModal(id) {
+  const d = DESTINATIONS.find(x => x.id === id);
+  if (!d) return;
+  const typeBg = { visual:'background:var(--sakura-light);color:#A0345A', hearing:'background:var(--lime-light);color:#2E7A36', mobility:'background:var(--amber-light);color:#8A5E00' };
+  const typeNames = { visual:'👁️ 시각장애 추천', hearing:'👂 청각장애 추천', mobility:'♿ 지체장애 추천' };
+  const accent = d.type==='visual'?'var(--sakura)':d.type==='hearing'?'var(--lime)':'var(--amber)';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-city">${d.icon} ${d.city}</div>
+    <span class="modal-type-badge" style="${typeBg[d.type]}">${typeNames[d.type]}</span>
+    <div class="modal-section"><h4>소개</h4><p style="font-size:0.9rem;line-height:1.7;">${d.detail}</p></div>
+    <div class="modal-section"><h4>주요 특징</h4>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+        ${d.features.map(f=>`<li style="display:flex;gap:10px;font-size:0.9rem;line-height:1.5;"><span style="color:${accent};flex-shrink:0">✦</span><span>${f}</span></li>`).join('')}
+      </ul>
+    </div>
+    <div class="modal-section"><h4>키워드</h4><div class="card-tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
+    <button class="modal-close-btn" onclick="closeModal()">닫기</button>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ── 배경음악 ──
+const bgmBtn   = document.getElementById('bgmBtn');
+const bgmAudio = document.getElementById('bgmAudio');
+bgmAudio.volume = 0.35;
+bgmBtn.addEventListener('click', () => {
+  if (bgmAudio.paused) { bgmAudio.play(); bgmBtn.textContent = '🔊 배경음악 끄기'; }
+  else { bgmAudio.pause(); bgmBtn.textContent = '🔇 배경음악 켜기'; }
+});
+
+// ── AI 추천 ──
+const aiBtn = document.getElementById('aiBtn');
+const aiResult = document.getElementById('aiResult');
+aiBtn.addEventListener('click', async () => {
+  const disability_type = document.getElementById('disabilitySelect').value;
+  if (!disability_type) { alert('장애 유형을 선택해주세요.'); return; }
+  aiBtn.disabled = true; aiBtn.textContent = '추천 중...';
+  aiResult.className = 'ai-result ai-loading';
+  aiResult.textContent = 'AI가 여행지를 찾고 있습니다...';
+  try {
+    const res = await fetch(`${RENDER_API_URL}/api/recommend`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ disability_type, preferences: document.getElementById('prefInput').value.trim() })
     });
+    const data = await res.json();
+    aiResult.className = 'ai-result';
+    aiResult.textContent = data.result;
+  } catch(e) {
+    aiResult.className = 'ai-result';
+    aiResult.textContent = '오류: ' + e.message;
+  } finally { aiBtn.disabled = false; aiBtn.textContent = 'AI 추천 받기'; }
+});
 
-    document.addEventListener('keydown', function(event) {
-      if (event.key !== 'Enter') return;
-
-      const activeId = document.activeElement.id;
-
-      if (activeId === 'emailInput' || activeId === 'passwordInput') {
-        loginBtn.click();
-      }
-
-      if (activeId === 'titleInput' || activeId === 'contentInput') {
-        addBtn.click();
-      }
+// ── 챗봇 ──
+let chatOpen = false;
+let chatHistory = [];
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chat-panel').classList.toggle('open', chatOpen);
+}
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  appendMsg('user', text);
+  document.getElementById('quick-replies').style.display = 'none';
+  showTyping();
+  chatHistory.push({ role: 'user', content: text });
+  try {
+    const res = await fetch(`${RENDER_API_URL}/api/chat`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ messages: chatHistory })
     });
-  </script>
+    const data = await res.json();
+    removeTyping();
+    const reply = data.result || '죄송합니다, 잠시 후 다시 시도해주세요.';
+    appendMsg('bot', reply);
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(err) {
+    removeTyping();
+    appendMsg('bot', '⚠️ 연결 오류가 발생했습니다.');
+  }
+}
+function sendQuick(text) { document.getElementById('chat-input').value = text; sendMessage(); }
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = role === 'bot'
+    ? `<div class="msg-bot-icon">🌸</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`
+    : `<div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function showTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing-msg';
+  div.innerHTML = `<div class="msg-bot-icon">🌸</div><div class="msg-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function removeTyping() { document.getElementById('typing-msg')?.remove(); }
+
+// ── ONNX 수화 인식 ──
+const SIGN_CLASSES = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+const MODEL_URL    = 'https://raw.githubusercontent.com/kang-teacher/japantravlel/main/sign.onnx';
+const CONF_THRESH  = 0.4;
+const INPUT_SIZE   = 800;
+
+const yoloVideo    = document.getElementById('yolo-video');
+const yoloCanvas   = document.getElementById('yolo-canvas');
+const yoloStatus   = document.getElementById('yolo-status');
+const yoloCtx      = yoloCanvas.getContext('2d');
+const signHistory  = [];
+
+let ortSession   = null;
+let camStream    = null;
+let animId       = null;
+let inferring    = false;
+let frameCount   = 0;
+
+document.getElementById('yoloStartBtn').addEventListener('click', async () => {
+  document.getElementById('yoloStartBtn').disabled = true;
+  try {
+    if (!ortSession) {
+      yoloStatus.textContent = '모델 로딩 중... (첫 실행은 시간이 걸립니다)';
+      ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
+      ortSession = await ort.InferenceSession.create(MODEL_URL, { executionProviders: ['wasm'] });
+      yoloStatus.textContent = '모델 로드 완료 ✅';
+    }
+    camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    yoloVideo.srcObject = camStream;
+    await yoloVideo.play();
+    yoloVideo.style.display = 'block';
+    document.getElementById('video-placeholder').style.display = 'none';
+    detectLoop();
+  } catch(e) {
+    yoloStatus.textContent = '오류: ' + e.message;
+    document.getElementById('yoloStartBtn').disabled = false;
+  }
+});
+
+document.getElementById('yoloStopBtn').addEventListener('click', () => {
+  cancelAnimationFrame(animId);
+  camStream?.getTracks().forEach(t => t.stop());
+  yoloVideo.style.display = 'none';
+  yoloVideo.srcObject = null;
+  document.getElementById('video-placeholder').style.display = '';
+  yoloCtx.clearRect(0, 0, yoloCanvas.width, yoloCanvas.height);
+  document.getElementById('detected-sign').textContent = '—';
+  document.getElementById('conf-fill').style.width = '0%';
+  document.getElementById('conf-text').textContent = '0%';
+  yoloStatus.textContent = '카메라를 시작해주세요';
+  document.getElementById('yoloStartBtn').disabled = false;
+});
+
+function detectLoop() {
+  animId = requestAnimationFrame(async () => {
+    if (yoloVideo.readyState >= 2 && !inferring) {
+      inferring = true;
+      try { await runInference(); }
+      catch(e) { yoloStatus.textContent = '추론 오류: ' + e.message; }
+      inferring = false;
+    }
+    detectLoop();
+  });
+}
+
+async function runInference() {
+  const vw = yoloVideo.videoWidth, vh = yoloVideo.videoHeight;
+  if (!vw || !vh) return;
+  yoloCanvas.width = vw; yoloCanvas.height = vh;
+
+  const off = document.createElement('canvas');
+  off.width = off.height = INPUT_SIZE;
+  off.getContext('2d').drawImage(yoloVideo, 0, 0, INPUT_SIZE, INPUT_SIZE);
+  const px = off.getContext('2d').getImageData(0, 0, INPUT_SIZE, INPUT_SIZE).data;
+
+  const n = INPUT_SIZE * INPUT_SIZE;
+  const f = new Float32Array(3 * n);
+  for (let i = 0; i < n; i++) { f[i] = px[i*4]/255; f[i+n] = px[i*4+1]/255; f[i+n*2] = px[i*4+2]/255; }
+
+  const tensor = new ort.Tensor('float32', f, [1, 3, INPUT_SIZE, INPUT_SIZE]);
+  const out    = await ortSession.run({ [ortSession.inputNames[0]]: tensor });
+  const outT   = out[ortSession.outputNames[0]];
+  const raw    = outT.data;
+  const dims   = outT.dims;
+
+  if (frameCount < 3) { console.log(`output dims: [${dims}]`); frameCount++; }
+
+  const dets = parseOutput(raw, dims, vw, vh);
+  draw(dets, vw, vh);
+}
+
+function parseOutput(raw, dims, vw, vh) {
+  const numBoxes = dims[2], numCls = dims[1] - 4;
+  const res = [];
+  for (let i = 0; i < numBoxes; i++) {
+    let max = 0, cid = 0;
+    for (let c = 0; c < numCls; c++) { const s = raw[(4+c)*numBoxes+i]; if (s > max) { max = s; cid = c; } }
+    if (max < CONF_THRESH) continue;
+    const cx = raw[0*numBoxes+i]/INPUT_SIZE*vw, cy = raw[1*numBoxes+i]/INPUT_SIZE*vh;
+    const bw = raw[2*numBoxes+i]/INPUT_SIZE*vw, bh = raw[3*numBoxes+i]/INPUT_SIZE*vh;
+    res.push({ x: cx-bw/2, y: cy-bh/2, w: bw, h: bh, score: max, classId: cid });
+  }
+  return nms(res, 0.45);
+}
+
+function nms(boxes, thr) {
+  boxes.sort((a,b) => b.score - a.score);
+  const used = new Array(boxes.length).fill(false), kept = [];
+  for (let i = 0; i < boxes.length; i++) {
+    if (used[i]) continue; kept.push(boxes[i]);
+    for (let j = i+1; j < boxes.length; j++)
+      if (!used[j] && iou(boxes[i],boxes[j]) > thr) used[j] = true;
+  }
+  return kept;
+}
+function iou(a,b) {
+  const ix = Math.max(0, Math.min(a.x+a.w,b.x+b.w) - Math.max(a.x,b.x));
+  const iy = Math.max(0, Math.min(a.y+a.h,b.y+b.h) - Math.max(a.y,b.y));
+  const inter = ix*iy;
+  return inter / (a.w*a.h + b.w*b.h - inter);
+}
+
+function draw(dets, vw, vh) {
+  yoloCtx.clearRect(0, 0, vw, vh);
+  if (!dets.length) { document.getElementById('detected-sign').textContent = '—'; document.getElementById('conf-fill').style.width = '0%'; document.getElementById('conf-text').textContent = '0%'; return; }
+  const top = dets[0];
+  const label = SIGN_CLASSES[top.classId] ?? '?';
+  document.getElementById('detected-sign').textContent = label;
+  document.getElementById('conf-fill').style.width = (top.score*100).toFixed(0) + '%';
+  document.getElementById('conf-text').textContent   = (top.score*100).toFixed(1) + '% 신뢰도';
+  yoloStatus.textContent = '인식 중...';
+
+  if (signHistory[signHistory.length-1] !== label) {
+    if (signHistory.length >= 8) signHistory.shift();
+    signHistory.push(label);
+    document.getElementById('sign-history').innerHTML = signHistory.map(s=>`<span class="sign-chip">${s}</span>`).join('');
+  }
+
+  dets.forEach(d => {
+    yoloCtx.strokeStyle = '#E8A0B4'; yoloCtx.lineWidth = 3;
+    yoloCtx.strokeRect(d.x, d.y, d.w, d.h);
+    const lbl = `${SIGN_CLASSES[d.classId]??'?'} ${(d.score*100).toFixed(0)}%`;
+    yoloCtx.font = 'bold 18px Arial';
+    const tw = yoloCtx.measureText(lbl).width;
+    yoloCtx.fillStyle = '#E8A0B4'; yoloCtx.fillRect(d.x, d.y-26, tw+10, 26);
+    yoloCtx.fillStyle = '#fff'; yoloCtx.fillText(lbl, d.x+5, d.y-6);
+  });
+}
+
+// ── 초기화 ──
+renderCards(DESTINATIONS);
+</script>
+
+<!-- Firebase 모듈 스크립트 -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAoxaZR7nj8NAFsM1WgFL0ZEF8PAdl8Dc",
+    authDomain: "travel-3971e.firebaseapp.com",
+    projectId: "travel-3971e",
+    storageBucket: "travel-3971e.firebasestorage.app",
+    messagingSenderId: "80463163374",
+    appId: "1:80463163374:web:800b8052cd4351d51968ff",
+    measurementId: "G-K60RWRQP92"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const authOverlay  = document.getElementById('authOverlay');
+  const emailInput   = document.getElementById('emailInput');
+  const passwordInput = document.getElementById('passwordInput');
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email = emailInput.value.trim(), pw = passwordInput.value.trim();
+    if (!email || !pw) { alert('이메일과 비밀번호를 모두 입력해주세요.'); return; }
+    try { await signInWithEmailAndPassword(auth, email, pw); }
+    catch(e) { alert(errMsg(e.code)); }
+  });
+
+  document.getElementById('signupBtn').addEventListener('click', async () => {
+    const email = emailInput.value.trim(), pw = passwordInput.value.trim();
+    if (!email || !pw) { alert('이메일과 비밀번호를 모두 입력해주세요.'); return; }
+    if (pw.length < 6) { alert('비밀번호는 6자리 이상이어야 합니다.'); return; }
+    try { await createUserWithEmailAndPassword(auth, email, pw); alert('회원가입 완료!'); }
+    catch(e) { alert(errMsg(e.code)); }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      authOverlay.classList.add('hidden');
+      document.getElementById('navUserEmail').textContent = user.email;
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      emailInput.value = ''; passwordInput.value = '';
+    } else {
+      authOverlay.classList.remove('hidden');
+      document.getElementById('navUserEmail').textContent = '';
+      document.getElementById('logoutBtn').classList.add('hidden');
+    }
+  });
+
+  [emailInput, passwordInput].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); })
+  );
+
+  function errMsg(code) {
+    return { 'auth/email-already-in-use':'이미 가입된 이메일입니다.', 'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
+      'auth/weak-password':'비밀번호가 너무 약합니다.', 'auth/user-not-found':'가입되지 않은 이메일입니다.',
+      'auth/wrong-password':'비밀번호가 올바르지 않습니다.', 'auth/invalid-credential':'이메일 또는 비밀번호가 올바르지 않습니다.',
+    }[code] ?? `오류: ${code}`;
+  }
+</script>
+
 </body>
 </html>
