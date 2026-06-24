@@ -4,9 +4,13 @@ import anthropic
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+
+@app.route("/")
+def health():
+    return jsonify({"status": "ok", "message": "Japan Travel API is running"})
 
 @app.route("/api/recommend", methods=["POST"])
 def recommend():
